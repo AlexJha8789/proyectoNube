@@ -1,67 +1,57 @@
 
 package pe.com.cibertec.web;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import pe.com.cibertec.domain.Customer;
 import pe.com.cibertec.servicio.CustomerService;
 
-@Controller
-@Slf4j
+@RestController
+@RequestMapping("/api")
 public class ControladorInicio {
-    
+
     @Autowired
-    
+
     private CustomerService customerService;
-    
-  
-    
-    @GetMapping("/")
-    public String inicio(Model model ){
-   
+
+    @GetMapping("/customers")
+    public List<Customer> getAllCustomers() {
         var customers = customerService.listarCustomers();
-       
-        log.info("ejecutando el controlador spring MVC");
-
-        model.addAttribute("customers" , customers) ;
-
-
-
-            return "index";
+        return customers;
     }
-    
-   
-    
-    @GetMapping("/agregar")
-    public String agregar(Customer customer){
-    
-    return "modificar";
-    }
-    
-    @PostMapping("/guardar")
-    public String guardar(Customer customer){
+
+    @PostMapping("/customers")
+    public void addCustomer(@RequestBody Customer customer) {
         customerService.guardar(customer);
-        return "redirect:/";
     }
-    
-    @GetMapping("/editar/{idCustomer}")
-    public String editar(Customer customer,Model model){
-        customer=customerService.encontrarCustomer(customer);
-        model.addAttribute("customer",customer);
-    
-        return "modificar";
-    }
-    
-    @GetMapping("/eliminar/{idCustomer}")
-    public String eliminar(Customer customer){
+
+    @DeleteMapping("/customers/{id}")
+    public void deleteCustomer(@PathVariable("id") Long id) {
+        Customer customer = new Customer();
+        customer.setIdCustomer(id);
         customerService.eliminar(customer);
-        return "redirect:/";
     }
-    
+
+    @GetMapping("/customers/{id}")
+    public Customer getCustomerId(@PathVariable("id") Long id) {
+        Customer customer = new Customer();
+        customer.setIdCustomer(id);
+        return customerService.encontrarCustomer(customer);
+    }
+
+    @PutMapping("/updateCustomer/{id}")
+    public Customer update(@PathVariable("id") Long id, @RequestBody Customer customer) {
+        return customerService.actualizar(customer);
+    }
+
 }
+

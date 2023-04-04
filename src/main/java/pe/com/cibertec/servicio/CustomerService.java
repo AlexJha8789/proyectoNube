@@ -14,4 +14,6 @@ public interface CustomerService {
     
     public Customer encontrarCustomer(Customer customer);
     
+    public Customer actualizar(Customer customer);
+    
 }

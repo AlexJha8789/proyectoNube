@@ -42,4 +42,8 @@ public class CustomerServiceImpl implements CustomerService {
      return customerDao.findById(customer.getIdCustomer()).orElse(null);
     }
     
+    @Override
+    public Customer actualizar(Customer customer) {
+        return customerDao.save(customer);
+    }
 }
